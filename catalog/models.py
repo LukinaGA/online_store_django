@@ -20,7 +20,7 @@ class Product(models.Model):
     image = models.ImageField(upload_to='images/', verbose_name='Изображение товара',
                               help_text='Загрузите изображение товара')
     category = models.ForeignKey('category', on_delete=models.SET_NULL, verbose_name='Категория',
-                                 help_text='Введите категорию', related_name='products')
+                                 help_text='Введите категорию', related_name='products', null=True, blank=True)
     price = models.FloatField(verbose_name='Цена товара', help_text='Введите цену товара')
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
