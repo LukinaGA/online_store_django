@@ -7,4 +7,4 @@ from blogs.models import Blog
 class BlogAdmin(admin.ModelAdmin):
     list_display = ('title', 'created_at', 'publication_sign')
     list_filter = ('publication_sign',)
-    search_fields = ('title', 'content')
+    search_fields = ('title', 'article')

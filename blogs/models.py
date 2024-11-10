@@ -3,7 +3,7 @@ from django.db import models
 
 class Blog(models.Model):
     title = models.CharField(max_length=100, verbose_name="Заголовок", help_text="Введите заголовок блога")
-    content = models.TextField(verbose_name="Контент", help_text="Введите текст блога")
+    article = models.TextField(verbose_name="Контент", help_text="Введите текст блога")
     image = models.ImageField(
         upload_to="images/",
         verbose_name="Превью",
@@ -22,4 +22,4 @@ class Blog(models.Model):
     class Meta:
         verbose_name = "Блог"
         verbose_name_plural = "Блоги"
-        ordering = ["title"]
+        ordering = ["created_at"]
