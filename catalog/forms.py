@@ -1,0 +1,27 @@
+from django import forms
+from .models import Product
+from django.core.exceptions import ValidationError
+
+
+class ProductForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        exclude = ('created_at', 'updated_at')
+
+    def clean_name(self):
+        forbidden_words = ["казино", "криптовалюта", "крипта", "биржа", "дешево", "дёшево", "бесплатно", "обман", "полиция",
+                           "радар"]
+        name = self.cleaned_data.get('name')
+        if name.lower() in forbidden_words:
+            raise ValidationError('Название содержит запрещенное слово')
+        return name
+
+    def clean_description(self):
+        forbidden_words = ["казино", "криптовалюта", "крипта", "биржа", "дешево", "дёшево", "бесплатно", "обман", "полиция",
+                           "радар"]
+        description = self.cleaned_data.get('description')
+        for word in forbidden_words:
+            if word in description.lower():
+                raise ValidationError('Описание содержит запрещенное слово')
+
+        return description
