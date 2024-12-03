@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
@@ -55,17 +55,20 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
         return reverse("catalog:product", args=[self.kwargs.get("pk")])
 
 
-class ProductDeleteView(LoginRequiredMixin, DeleteView):
+class ProductDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Product
     success_url = reverse_lazy("catalog:products_list")
 
+    permission_required = 'catalog.delete_product'
+
 
 class UnpublishProductView(LoginRequiredMixin, View):
+
     def post(self, request, pk):
         product = get_object_or_404(Product, id=pk)
 
-        if not request.user.has_perm('catalog.can_unpublished_product'):
-            return HttpResponseForbidden("У вас недостаточно прав")
+        if not request.user.has_perm('catalog.can_unpublish_product'):
+            return HttpResponseForbidden("У вас недостаточно прав для снятия продукта с публикации")
 
         product.is_published = False
         product.save()
