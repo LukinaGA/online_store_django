@@ -1,7 +1,9 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404, redirect
+from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.cache import cache_page
 from django.views.generic import DetailView, ListView, TemplateView
 from django.views.generic.edit import UpdateView, DeleteView, CreateView
 from django.urls import reverse, reverse_lazy
@@ -29,6 +31,7 @@ class ProductListView(ListView):
     model = Product
 
 
+@method_decorator(cache_page(60 * 15), name='dispatch')
 class ProductDetailsView(LoginRequiredMixin, DetailView):
     model = Product
 
