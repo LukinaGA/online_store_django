@@ -9,7 +9,8 @@ from django.views.generic.edit import UpdateView, DeleteView, CreateView
 from django.urls import reverse, reverse_lazy
 
 from .forms import ProductForm
-from .models import Product
+from .models import Product, Category
+from .services import get_products_list_by_category
 
 
 class HomeTemplateView(TemplateView):
@@ -77,3 +78,15 @@ class UnpublishProductView(LoginRequiredMixin, View):
         product.save()
 
         return redirect('catalog:product', pk=product.id)
+
+
+class ProductCategoryListView(ListView):
+    model = Category
+    template_name = 'catalog/products_list_by_category.html'
+    context_object_name = 'category'
+
+    def get_queryset(self, *args, **kwargs):
+        queryset = get_products_list_by_category(self.kwargs.get('pk'))
+
+        return queryset
+
