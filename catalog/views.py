@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.core.cache import cache
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.decorators import method_decorator
@@ -30,6 +31,13 @@ def contacts(request):
 
 class ProductListView(ListView):
     model = Product
+
+    def get_queryset(self, *args, **kwargs):
+        queryset = cache.get('products_queryset')
+        if not queryset:
+            queryset = super().get_queryset()
+            cache.set('products_queryset', queryset, 60 * 15)
+        return queryset
 
 
 @method_decorator(cache_page(60 * 15), name='dispatch')
@@ -89,4 +97,3 @@ class ProductCategoryListView(ListView):
         queryset = get_products_list_by_category(self.kwargs.get('pk'))
 
         return queryset
-
